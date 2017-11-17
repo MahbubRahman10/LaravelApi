@@ -15,7 +15,10 @@ class PostCollection extends Resource
     public function toArray($request)
     {
         return [
-            'title' => $this->title
+            'title' => $this->title,
+            'href' => [
+                'link' => route('posts.show',$this->id)
+            ]
         ];
     }
 }

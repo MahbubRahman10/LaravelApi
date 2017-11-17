@@ -16,7 +16,8 @@ class PostResource extends Resource
     {
         return [
             'title' => $this->title,
-            'detail' => $this->detail
+            'description' => $this->detail,
+            'comments' => $this->comments 
         ];
     }
 }
