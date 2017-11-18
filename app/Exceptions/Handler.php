@@ -2,19 +2,21 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\ExceptionTrait;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+
 class Handler extends ExceptionHandler
 {
-    /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array
-     */
+    
+    use ExceptionTrait;
+
     protected $dontReport = [
         //
     ];
+
+  
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
@@ -35,7 +37,7 @@ class Handler extends ExceptionHandler
      * @return void
      */
     public function report(Exception $exception)
-    {
+    {    
         parent::report($exception);
     }
 
@@ -47,7 +49,10 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
-    {
+    {    
+        if($request->expectsJson()){
+            return $this->apiExceptions($request, $exception);
+        }
         return parent::render($request, $exception);
     }
 }
