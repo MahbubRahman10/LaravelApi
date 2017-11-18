@@ -19,6 +19,8 @@ trait ExceptionTrait{
 		if ($this->IsHttp($e)) {   
 			return $this->ResponseHttp();
 		} 
+
+		return parent::render($request, $e);
 	}
 
 	protected function IsModel($exception)

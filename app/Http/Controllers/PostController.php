@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\PostNotBelongsToUser;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Post;
+use Auth;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -85,6 +87,8 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
+        $this->CheckPostUser($post);
+
         $request['detail'] = $request->description;
 
         unset($request['description']);
@@ -102,7 +106,14 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        $this->CheckPostUser($post);
         $post->delete();
         return Response()->json("Post Deleted Successfully",201);
+    }
+    protected function CheckPostUser($post)
+    {
+        if (Auth::id() != $post->user_id) {
+            throw new PostNotBelongsToUser;
+        }
     }
 }

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Http\Requests\CommentRequest;
+use App\Http\Resources\Comment\CommentResource;
+use App\Http\Resources\Post\PostResource;
+use App\Post;
+use Illuminate\Foundation\Http\response;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -33,9 +38,14 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request, Post $post)
     {
-        //
+        $comment = New Comment($request->all());
+        $post->comments()->save($comment);
+
+        return response([
+            'data' => new CommentResource($comment)
+        ],201); 
     }
 
     /**
