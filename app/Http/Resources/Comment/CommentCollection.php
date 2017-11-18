@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources\Comment;
 
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\Resource;
 
-class CommentCollection extends ResourceCollection
+class CommentCollection extends Resource
 {
     /**
      * Transform the resource collection into an array.
@@ -14,6 +15,10 @@ class CommentCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'name' => $this->name,
+            'comment' => $this->comment,
+            'date' =>  Carbon::parse($this->created_at)->format('M d,Y') 
+        ];
     }
 }

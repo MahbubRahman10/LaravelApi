@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Http\Resources\Post\PostCollection;
 use App\Http\Resources\Post\PostResource;
 use App\Post;
@@ -9,6 +10,12 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('index','show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +42,16 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        //
+        $post = new Post;
+        $post->title = $request->title;
+        $post->detail = $request->description;
+        $post->save();
+
+        return response([
+            'data' => new PostResource($post)
+        ],201);
     }
 
     /**
@@ -69,9 +83,15 @@ class PostController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
-        //
+        $request['detail'] = $request->description;
+
+        unset($request['description']);
+
+        $post->update($request->all());
+
+        return Response()->json("Post Updated Successfully",201);
     }
 
     /**
@@ -82,6 +102,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return Response()->json("Post Deleted Successfully",201);
     }
 }
